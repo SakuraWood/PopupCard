@@ -193,12 +193,12 @@ public class PopupCard extends FrameLayout implements PopupContainer.OnOutsideLi
             super.setY(ConvertUtils.dp2px(context, locationY));
         }
         setLayoutParams(layoutParams);
+        addViews(content);
 
         popupContainer = new PopupContainer(context);
         popupContainer.addView(this);
         popupContainer.setOutsideListener(this);
         parent.addView(popupContainer);
-        addViews(content);
         Log.e("popupcard", target.getLeft() + "   " + target.getTop() + "   "
                 + target.getRight() + "    " + target.getBottom());
 

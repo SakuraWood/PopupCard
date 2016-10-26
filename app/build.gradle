@@ -29,4 +29,5 @@ dependencies {
     compile 'com.android.support:cardview-v7:24.2.1'
     compile project(':popupcard')
     compile 'com.sakurawood:rcvbaseadapter:0.1.8'
+//    compile 'com.github.SakuraWood:PopupCard:0.0.1'
 }

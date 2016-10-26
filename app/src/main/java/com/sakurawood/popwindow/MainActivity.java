@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 popupCardView.setHeight(250).setWidth(150).setX(50).setY(15)
-                        .setW(10).setRadis(60).setRound(10).setColor(Color.BLUE)
+                        .setW(10).setRadis(120).setRound(10).setColor(Color.BLUE)
                         .setLocationX(1).setLocationY(1)
                         .showContentAt(textView, linearLayout, relativeLayout);
             }

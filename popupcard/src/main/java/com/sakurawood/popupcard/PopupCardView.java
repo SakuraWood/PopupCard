@@ -3,7 +3,6 @@ package com.sakurawood.popupcard;
 import android.content.Context;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
@@ -41,7 +40,7 @@ public class PopupCardView extends View {
         this.x = popcardBean.getX();
         this.y = popcardBean.getY();
         this.w = popcardBean.getW();
-        this.radis = 180 / popcardBean.getRadis();
+        this.radis = popcardBean.getRadis();
         this.round = popcardBean.getRound();
         this.color = popcardBean.getColor();
         this.resid = popcardBean.getPicid();
@@ -126,7 +125,9 @@ public class PopupCardView extends View {
             Path path2 = new Path();
             path2.moveTo(ConvertUtils.dp2px(context, x - w - i / 2), ConvertUtils.dp2px(context, y + i / 2));
             path2.lineTo(ConvertUtils.dp2px(context, x + w + i / 2), ConvertUtils.dp2px(context, y + i / 2));
-            path2.lineTo(ConvertUtils.dp2px(context, (float) (x + (y / (Math.tan(Math.PI / radis))))), ConvertUtils.dp2px(context, (float) (0.5 - i / 2)));
+//            float location = (float) (y / (Math.tan(Math.PI / radis)));
+//            Log.e("PopupCardView", location + "");
+            path2.lineTo(ConvertUtils.dp2px(context, (float) (x + (y / (Math.tan(Math.toRadians(radis)))))), ConvertUtils.dp2px(context, (float) (0.5 - i / 2)));
             path2.close();
             canvas.drawPath(path2, paint);
         }
@@ -139,7 +140,7 @@ public class PopupCardView extends View {
         paint.setStyle(Paint.Style.FILL);
         paint.setAntiAlias(true);
         paint.setAlpha(255);
-        paint.setColor(Color.WHITE);
+        paint.setColor(color);
 
         RectF rect = new RectF(ConvertUtils.dp2px(context, (float) 1),
                 ConvertUtils.dp2px(context, (float) (y + 1)),
@@ -150,7 +151,9 @@ public class PopupCardView extends View {
         Path path2 = new Path();
         path2.moveTo(ConvertUtils.dp2px(context, x - w), ConvertUtils.dp2px(context, (float) (y + 1)));
         path2.lineTo(ConvertUtils.dp2px(context, x + w), ConvertUtils.dp2px(context, (float) (y + 1)));
-        path2.lineTo(ConvertUtils.dp2px(context, (float) (x + (y / (Math.tan(Math.PI / radis))))), ConvertUtils.dp2px(context, (float) 1));
+//        float location = (float) (y / (Math.tan(Math.PI / radis)));
+//        Log.e("PopupCardView", location + "");
+        path2.lineTo(ConvertUtils.dp2px(context, (float) (x + (y / (Math.tan(Math.toRadians(radis)))))), ConvertUtils.dp2px(context, (float) 1));
         path2.close();
         canvas.drawPath(path2, paint);
     }

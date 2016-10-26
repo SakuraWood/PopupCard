@@ -134,7 +134,7 @@ public class PopupCard extends FrameLayout implements PopupContainer.OnOutsideLi
         return this;
     }
 
-    public void addViews(ViewGroup viewGroup) {
+    public void addViews(View viewGroup) {
 
         Log.e("layoutparams", width + "    " + height);
 
@@ -173,7 +173,7 @@ public class PopupCard extends FrameLayout implements PopupContainer.OnOutsideLi
         removeAllViewsInLayout();
     }
 
-    public void showContentAt(View target, ViewGroup content, ViewGroup parent) {
+    public void showContentAt(View target, View content, ViewGroup parent) {
         this.parent = parent;
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
                 ConvertUtils.dp2px(context, width), ConvertUtils.dp2px(context, height));
@@ -234,6 +234,4 @@ public class PopupCard extends FrameLayout implements PopupContainer.OnOutsideLi
     public void onOutsideClick() {
         dismiss();
     }
-
-
 }

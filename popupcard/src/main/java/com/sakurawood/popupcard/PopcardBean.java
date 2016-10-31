@@ -41,6 +41,18 @@ public class PopcardBean {
      * the picture of the popupcardview;
      */
     int picid;
+    /**
+     * up or down;
+     */
+    boolean down;
+
+    public boolean isDown() {
+        return down;
+    }
+
+    public void setDown(boolean down) {
+        this.down = down;
+    }
 
     public int getWidth() {
         return width;

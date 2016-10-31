@@ -61,6 +61,7 @@ public class PopupCard extends FrameLayout implements PopupContainer.OnOutsideLi
      * the y of the popupcard;
      */
     private int locationY;
+    boolean down;
 
     private PopupContainer popupContainer;
 
@@ -134,6 +135,11 @@ public class PopupCard extends FrameLayout implements PopupContainer.OnOutsideLi
         return this;
     }
 
+    public PopupCard setDown(boolean down) {
+        this.down = down;
+        return this;
+    }
+
     public void addViews(View viewGroup) {
 
         Log.e("layoutparams", width + "    " + height);
@@ -157,13 +163,30 @@ public class PopupCard extends FrameLayout implements PopupContainer.OnOutsideLi
                 ConvertUtils.dp2px(context, 0));
         addView(popcard);
 
-
-        viewGroup.setPadding(ConvertUtils.dp2px(context, round / 2 + 2),
-                ConvertUtils.dp2px(context, y + round / 2 + 2),
-                ConvertUtils.dp2px(context, round / 2 + 2),
-                ConvertUtils.dp2px(context, round / 2 + 2));
-
-        addView(viewGroup);
+        LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT
+                , ViewGroup.LayoutParams.MATCH_PARENT);
+        MarginLayoutParams marginLayoutParams = new MarginLayoutParams(layoutParams);
+//        marginLayoutParams.leftMargin = ConvertUtils.dp2px(context, round / 2 + 2);
+//        marginLayoutParams.topMargin = ConvertUtils.dp2px(context, round / 2 + 2);
+//        marginLayoutParams.rightMargin = ConvertUtils.dp2px(context, round / 2 + 2);
+//        marginLayoutParams.bottomMargin = ConvertUtils.dp2px(context, round / 2 + 2);
+        if (!down) {
+            viewGroup.setLayoutParams(marginLayoutParams);
+            viewGroup.setPadding(ConvertUtils.dp2px(context, round / 2 + 2),
+                    ConvertUtils.dp2px(context, y + round / 2 + 2),
+                    ConvertUtils.dp2px(context, round / 2 + 2),
+                    ConvertUtils.dp2px(context, round / 2));
+            addView(viewGroup);
+        } else {
+            viewGroup.setLayoutParams(marginLayoutParams);
+            viewGroup.setPadding(ConvertUtils.dp2px(context, round / 2 + 2),
+                    ConvertUtils.dp2px(context, round / 2 + 2),
+                    ConvertUtils.dp2px(context, round / 2 + 2),
+                    ConvertUtils.dp2px(context, round / 2 + y));
+            viewGroup.setRotation(180);
+            addView(viewGroup);
+            setRotation(180);
+        }
     }
 
     public void dismiss() {
@@ -182,13 +205,13 @@ public class PopupCard extends FrameLayout implements PopupContainer.OnOutsideLi
             target.getLocationInWindow(location);
             int x = location[0];
             int y = location[1];
-            Log.e("popupcard", ConvertUtils.px2dp(context, x) + "   " + ConvertUtils.px2dp(context, y));
+//            Log.e("popupcard", ConvertUtils.px2dp(context, x) + "   " + ConvertUtils.px2dp(context, y));
 
             super.setX(x);
             super.setY(y);
         } else {
-            Log.e("popupcard", locationX
-                    + "   " + locationY);
+//            Log.e("popupcard", locationX
+//                    + "   " + locationY);
             super.setX(ConvertUtils.dp2px(context, locationX));
             super.setY(ConvertUtils.dp2px(context, locationY));
         }

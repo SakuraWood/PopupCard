@@ -24,6 +24,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     PopupCard popupCardView;
+    PopupCard popupCardView2;
     TextView textView;
     RelativeLayout relativeLayout;
     LinearLayout linearLayout;
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         relativeLayout = (RelativeLayout) findViewById(R.id.relative);
         popupCardView = new PopupCard(this);
+        popupCardView2 = new PopupCard(this);
         textView = (TextView) findViewById(R.id.text);
         linearLayout = (LinearLayout) LayoutInflater
                 .from(getApplicationContext()).inflate(R.layout.layout_viewgroup, null);
@@ -89,9 +91,14 @@ public class MainActivity extends AppCompatActivity {
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                popupCardView.setHeight(250).setWidth(150).setX(50).setY(15)
+//                popupCardView.setHeight(250).setWidth(150).setX(50).setY(15)
+//                        .setW(10).setRadis(120).setRound(10).setColor(Color.BLUE)
+//                        .setLocationX(1).setLocationY(1)
+//                        .showContentAt(textView, linearLayout, relativeLayout);
+
+                popupCardView2.setHeight(250).setWidth(150).setX(50).setY(15)
                         .setW(10).setRadis(120).setRound(10).setColor(Color.BLUE)
-                        .setLocationX(1).setLocationY(1)
+                        .setLocationX(100).setLocationY(300).setDown(true)
                         .showContentAt(textView, linearLayout, relativeLayout);
             }
         });

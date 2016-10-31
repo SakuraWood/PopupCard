@@ -57,7 +57,7 @@ public class PopupContainer extends FrameLayout {
                 Log.e("handleaction", "ACTION_OUTSIDE");
                 break;
         }
-        return false;
+        return true;
     }
 
     interface OnOutsideListener {

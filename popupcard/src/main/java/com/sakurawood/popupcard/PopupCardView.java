@@ -25,6 +25,7 @@ public class PopupCardView extends View {
     private int round;
     private int resid;
     private int color;
+    private boolean down;
 
     public PopupCardView(Context context) {
         super(context);
@@ -108,7 +109,6 @@ public class PopupCardView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         Paint paint = new Paint();
-
         int alpha = 0xff;
         for (int i = 0; i < 2; i++) {
             paint.setStyle(Paint.Style.FILL);
@@ -132,7 +132,6 @@ public class PopupCardView extends View {
             canvas.drawPath(path2, paint);
         }
         drawRect(canvas);
-
     }
 
     private void drawRect(Canvas canvas) {

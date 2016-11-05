@@ -1,11 +1,16 @@
 package com.sakurawood.popupcard;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.FrameLayout;
 
 /**
@@ -61,9 +66,18 @@ public class PopupCard extends FrameLayout implements PopupContainer.OnOutsideLi
      * the y of the popupcard;
      */
     private int locationY;
-    boolean down;
+    /**
+     * 设置是否是倒尖角
+     */
+    private boolean down;
+    /**
+     * 设置是否有尖角
+     */
+    private boolean caret;
 
     private PopupContainer popupContainer;
+
+    private Activity activity;
 
     public PopupCard(Context context) {
         super(context);
@@ -125,6 +139,12 @@ public class PopupCard extends FrameLayout implements PopupContainer.OnOutsideLi
         return this;
     }
 
+    public PopupCard setActivity(Activity activity) {
+        this.activity = activity;
+        this.parent = (ViewGroup) getRootView(activity).getParent();
+        return this;
+    }
+
     public PopupCard setLocationX(int locationX) {
         this.locationX = locationX;
         return this;
@@ -140,6 +160,11 @@ public class PopupCard extends FrameLayout implements PopupContainer.OnOutsideLi
         return this;
     }
 
+    public PopupCard setCaret(boolean caret) {
+        this.caret = caret;
+        return this;
+    }
+
     public void addViews(View viewGroup) {
 
         Log.e("layoutparams", width + "    " + height);
@@ -148,10 +173,22 @@ public class PopupCard extends FrameLayout implements PopupContainer.OnOutsideLi
 
         popcardBean.setHeight(height);
         popcardBean.setWidth(width);
-        popcardBean.setX(x);
-        popcardBean.setY(y);
-        popcardBean.setW(w);
-        popcardBean.setRadis(radis);
+        //是否有尖角
+        if (!caret) {
+            //直接让其偏移出绘制区域，也就没有尖角了
+            popcardBean.setX(width + width / 2);
+            y = 0;
+        } else {
+            //x代表的是尖角的偏移量
+            if (!down) {
+                popcardBean.setX(x + width / 2);
+            } else {
+                popcardBean.setX(width / 2 - x);
+            }
+            popcardBean.setY(y);
+            popcardBean.setW(w);
+            popcardBean.setRadis(radis);
+        }
         popcardBean.setRound(round);
         popcardBean.setPicid(resid);
         popcardBean.setColor(color);
@@ -166,11 +203,9 @@ public class PopupCard extends FrameLayout implements PopupContainer.OnOutsideLi
         LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT
                 , ViewGroup.LayoutParams.MATCH_PARENT);
         MarginLayoutParams marginLayoutParams = new MarginLayoutParams(layoutParams);
-//        marginLayoutParams.leftMargin = ConvertUtils.dp2px(context, round / 2 + 2);
-//        marginLayoutParams.topMargin = ConvertUtils.dp2px(context, round / 2 + 2);
-//        marginLayoutParams.rightMargin = ConvertUtils.dp2px(context, round / 2 + 2);
-//        marginLayoutParams.bottomMargin = ConvertUtils.dp2px(context, round / 2 + 2);
+        //设置layout参数，合适的padding使得内容刚好在card里
         if (!down) {
+            //尖角向上或者向下的情况都不一样，需要不同的计算方式
             viewGroup.setLayoutParams(marginLayoutParams);
             viewGroup.setPadding(ConvertUtils.dp2px(context, round / 2 + 2),
                     ConvertUtils.dp2px(context, y + round / 2 + 2),
@@ -178,6 +213,7 @@ public class PopupCard extends FrameLayout implements PopupContainer.OnOutsideLi
                     ConvertUtils.dp2px(context, round / 2));
             addView(viewGroup);
         } else {
+//            如果向下的话，得将整个布局旋转，再将内容的布局旋转回来
             viewGroup.setLayoutParams(marginLayoutParams);
             viewGroup.setPadding(ConvertUtils.dp2px(context, round / 2 + 2),
                     ConvertUtils.dp2px(context, round / 2 + 2),
@@ -196,22 +232,35 @@ public class PopupCard extends FrameLayout implements PopupContainer.OnOutsideLi
         removeAllViewsInLayout();
     }
 
-    public void showContentAt(View target, View content, ViewGroup parent) {
-        this.parent = parent;
+    public void showContentAt(View target, View content) {
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
                 ConvertUtils.dp2px(context, width), ConvertUtils.dp2px(context, height));
         int[] location = new int[2];
+        target.getLocationInWindow(location);
+        int x = location[0];
+        int y = location[1];
+        LogUtils.e("location", x + "   " + y);
         if (this.locationX == 0 || this.locationY == 0) {
-            target.getLocationInWindow(location);
-            int x = location[0];
-            int y = location[1];
-//            Log.e("popupcard", ConvertUtils.px2dp(context, x) + "   " + ConvertUtils.px2dp(context, y));
+            LogUtils.e("location", target.getHeight() + "    " + target.getWidth());
+            //尖角向上和向下的显示位置是不一样的
 
-            super.setX(x);
-            super.setY(y);
+            //如果x大于布局的二分之一，则将其定位在目标view的正上方或正下方
+            if (x + target.getWidth() / 2 > ConvertUtils.dp2px(context, width / 2)) {
+                if (this.radis == 0) {
+                    this.radis = 90;//如果用户没有指定尖角角度，正上方或正下方时，尖角角度设为90度
+                }
+                x = target.getWidth() / 2 + x - ConvertUtils.dp2px(context, width / 2);
+            } else if (x < width / 2) {
+
+            }
+            if (!down) {
+                super.setX(x);
+                super.setY(y + target.getHeight() - (getWindowDimen().mHeight - getAppDimen().mHeight));
+            } else {
+                super.setX(x);
+                super.setY(y - ConvertUtils.dp2px(context, height) - (getWindowDimen().mHeight - getAppDimen().mHeight));
+            }
         } else {
-//            Log.e("popupcard", locationX
-//                    + "   " + locationY);
             super.setX(ConvertUtils.dp2px(context, locationX));
             super.setY(ConvertUtils.dp2px(context, locationY));
         }
@@ -222,9 +271,6 @@ public class PopupCard extends FrameLayout implements PopupContainer.OnOutsideLi
         popupContainer.addView(this);
         popupContainer.setOutsideListener(this);
         parent.addView(popupContainer);
-        Log.e("popupcard", target.getLeft() + "   " + target.getTop() + "   "
-                + target.getRight() + "    " + target.getBottom());
-
     }
 
     @Override
@@ -232,22 +278,16 @@ public class PopupCard extends FrameLayout implements PopupContainer.OnOutsideLi
         int action = event.getAction();
         switch (action) {
             case MotionEvent.ACTION_DOWN:
-                Log.e("handleaction", "ACTION_DOWN");
                 break;
             case MotionEvent.ACTION_UP:
-                Log.e("handleaction", "ACTION_UP");
                 break;
             case MotionEvent.ACTION_CANCEL:
-                Log.e("handleaction", "ACTION_CANCEL");
                 break;
             case MotionEvent.ACTION_MOVE:
-                Log.e("handleaction", "ACTION_MOVE");
                 break;
             case MotionEvent.ACTION_SCROLL:
-                Log.e("handleaction", "ACTION_SCROLL");
                 break;
             case MotionEvent.ACTION_OUTSIDE:
-                Log.e("handleaction", "ACTION_OUTSIDE");
                 break;
         }
         return true;
@@ -256,5 +296,63 @@ public class PopupCard extends FrameLayout implements PopupContainer.OnOutsideLi
     @Override
     public void onOutsideClick() {
         dismiss();
+    }
+
+    private View getRootView(Activity context) {
+        return ((ViewGroup) context.findViewById(android.R.id.content)).getChildAt(0);
+    }
+
+    /**
+     * 获得整个屏幕的像素尺寸
+     *
+     * @return
+     */
+    private Dimension getWindowDimen() {
+        Dimension dimen = new Dimension();
+        Display disp = activity.getWindowManager().getDefaultDisplay();
+        Point outP = new Point();
+        disp.getSize(outP);
+        dimen.mWidth = outP.x;
+        dimen.mHeight = outP.y;
+        return dimen;
+    }
+
+    /**
+     * 获得整个app的像素尺寸（相比屏幕尺寸，除去了状态栏的高度）
+     *
+     * @return
+     */
+    private Dimension getAppDimen() {
+        Dimension dimen = new Dimension();
+        Rect outRect = new Rect();
+        activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(outRect);
+        System.out.println("top:" + outRect.top + " ; left: " + outRect.left);
+        dimen.mWidth = outRect.width();
+        dimen.mHeight = outRect.height();
+        return dimen;
+    }
+
+    /**
+     * 获得整个view绘制区域的像素尺寸（如果有toolbar，则除掉toolbar的高度）
+     *
+     * @return
+     */
+    private Dimension getViewDimen() {
+        Dimension dimen = new Dimension();
+        // 用户绘制区域
+        Rect outRect = new Rect();
+        activity.getWindow().findViewById(Window.ID_ANDROID_CONTENT).getDrawingRect(outRect);
+        dimen.mWidth = outRect.width();
+        dimen.mHeight = outRect.height();
+        // end
+        return dimen;
+    }
+
+    private class Dimension {
+        public int mWidth;
+        public int mHeight;
+
+        public Dimension() {
+        }
     }
 }

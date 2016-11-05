@@ -125,8 +125,6 @@ public class PopupCardView extends View {
             Path path2 = new Path();
             path2.moveTo(ConvertUtils.dp2px(context, x - w - i / 2), ConvertUtils.dp2px(context, y + i / 2));
             path2.lineTo(ConvertUtils.dp2px(context, x + w + i / 2), ConvertUtils.dp2px(context, y + i / 2));
-//            float location = (float) (y / (Math.tan(Math.PI / radis)));
-//            Log.e("PopupCardView", location + "");
             path2.lineTo(ConvertUtils.dp2px(context, (float) (x + (y / (Math.tan(Math.toRadians(radis)))))), ConvertUtils.dp2px(context, (float) (0.5 - i / 2)));
             path2.close();
             canvas.drawPath(path2, paint);
@@ -150,8 +148,6 @@ public class PopupCardView extends View {
         Path path2 = new Path();
         path2.moveTo(ConvertUtils.dp2px(context, x - w), ConvertUtils.dp2px(context, (float) (y + 1)));
         path2.lineTo(ConvertUtils.dp2px(context, x + w), ConvertUtils.dp2px(context, (float) (y + 1)));
-//        float location = (float) (y / (Math.tan(Math.PI / radis)));
-//        Log.e("PopupCardView", location + "");
         path2.lineTo(ConvertUtils.dp2px(context, (float) (x + (y / (Math.tan(Math.toRadians(radis)))))), ConvertUtils.dp2px(context, (float) 1));
         path2.close();
         canvas.drawPath(path2, paint);

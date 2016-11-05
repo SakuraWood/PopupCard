@@ -80,14 +80,25 @@ public class MainActivity extends AppCompatActivity {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                popupCardView.dismiss();
+                popupCardView2.dismiss();
             }
         });
 //        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(
 //                ConvertUtils.dp2px(this, 150), ConvertUtils.dp2px(this, 250));
 //        popupCardView.setLayoutParams(layoutParams);
 
-
+        popupCardView2.setHeight(250).setWidth(150).
+                setX(50).
+                setY(15).
+                setActivity(this)
+                .setW(10).
+                setRadis(120)
+                .setRound(10).
+                setCaret(false).
+                setColor(Color.BLUE)
+                .setDown(true)
+//                .setLocationX(0).setLocationY(0)
+        ;
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,12 +107,11 @@ public class MainActivity extends AppCompatActivity {
 //                        .setLocationX(1).setLocationY(1)
 //                        .showContentAt(textView, linearLayout, relativeLayout);
 
-                popupCardView2.setHeight(250).setWidth(150).setX(50).setY(15)
-                        .setW(10).setRadis(120).setRound(10).setColor(Color.BLUE)
-                        .setLocationX(100).setLocationY(300).setDown(true)
-                        .showContentAt(textView, linearLayout, relativeLayout);
+
+                popupCardView2.showContentAt(textView, linearLayout);
             }
         });
+
 
         new Thread(new Runnable() {
             @Override

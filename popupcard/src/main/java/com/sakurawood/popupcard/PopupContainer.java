@@ -2,7 +2,6 @@ package com.sakurawood.popupcard;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -19,10 +18,6 @@ public class PopupContainer extends FrameLayout {
         ViewGroup.LayoutParams layoutParams = new LayoutParams(
                 LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         setLayoutParams(layoutParams);
-
-        layoutParams = getLayoutParams();
-        Log.e("PopupContainer", ConvertUtils.px2dp(context, layoutParams.width)
-                + "   " + ConvertUtils.px2dp(context, layoutParams.height));
     }
 
     public PopupContainer(Context context, AttributeSet attrs) {
@@ -39,22 +34,16 @@ public class PopupContainer extends FrameLayout {
         switch (action) {
             case MotionEvent.ACTION_DOWN:
                 onOutsideListener.onOutsideClick();
-                Log.e("handleaction", "ACTION_DOWN");
                 break;
             case MotionEvent.ACTION_UP:
-                Log.e("handleaction", "ACTION_UP");
                 break;
             case MotionEvent.ACTION_CANCEL:
-                Log.e("handleaction", "ACTION_CANCEL");
                 break;
             case MotionEvent.ACTION_MOVE:
-                Log.e("handleaction", "ACTION_MOVE");
                 break;
             case MotionEvent.ACTION_SCROLL:
-                Log.e("handleaction", "ACTION_SCROLL");
                 break;
             case MotionEvent.ACTION_OUTSIDE:
-                Log.e("handleaction", "ACTION_OUTSIDE");
                 break;
         }
         return true;

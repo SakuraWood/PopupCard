@@ -12,20 +12,32 @@ import android.widget.FrameLayout;
 
 public class PopupContainer extends FrameLayout {
     private OnOutsideListener onOutsideListener;
+    private boolean outsideclick;
 
-    public PopupContainer(Context context) {
+    public PopupContainer(Context context, boolean outsideclick) {
         super(context);
+        this.outsideclick = outsideclick;
         ViewGroup.LayoutParams layoutParams = new LayoutParams(
                 LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         setLayoutParams(layoutParams);
     }
 
-    public PopupContainer(Context context, AttributeSet attrs) {
+    public PopupContainer(Context context, AttributeSet attrs, boolean outsideclick) {
         super(context, attrs);
+        this.outsideclick = outsideclick;
     }
 
-    public PopupContainer(Context context, AttributeSet attrs, int defStyleAttr) {
+    public PopupContainer(Context context, AttributeSet attrs, int defStyleAttr, boolean outsideclick) {
         super(context, attrs, defStyleAttr);
+        this.outsideclick = outsideclick;
+    }
+
+    public boolean isOutsideclick() {
+        return outsideclick;
+    }
+
+    public void setOutsideclick(boolean outsideclick) {
+        this.outsideclick = outsideclick;
     }
 
     @Override
@@ -34,19 +46,24 @@ public class PopupContainer extends FrameLayout {
         switch (action) {
             case MotionEvent.ACTION_DOWN:
                 onOutsideListener.onOutsideClick();
+                LogUtils.e("popupcontainer", "ACTION_DOWN");
                 break;
             case MotionEvent.ACTION_UP:
+                LogUtils.e("popupcontainer", "ACTION_UP");
                 break;
             case MotionEvent.ACTION_CANCEL:
+                LogUtils.e("popupcontainer", "ACTION_CANCEL");
                 break;
             case MotionEvent.ACTION_MOVE:
+                LogUtils.e("popupcontainer", "ACTION_MOVE");
                 break;
             case MotionEvent.ACTION_SCROLL:
+                LogUtils.e("popupcontainer", "ACTION_SCROLL");
                 break;
             case MotionEvent.ACTION_OUTSIDE:
                 break;
         }
-        return true;
+        return this.outsideclick;
     }
 
     interface OnOutsideListener {

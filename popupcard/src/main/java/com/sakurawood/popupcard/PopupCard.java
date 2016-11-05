@@ -74,10 +74,26 @@ public class PopupCard extends FrameLayout implements PopupContainer.OnOutsideLi
      * 设置是否有尖角
      */
     private boolean caret;
+    /**
+     * 设置是否加载默认动画
+     */
+    private boolean defaultAnime;
+
+    private boolean open;
+
+    private boolean outSideClick;
 
     private PopupContainer popupContainer;
 
     private Activity activity;
+
+    public static int FROM_DOWN = 4;
+    public static int FROM_UP = 2;
+    public static int FROM_LEFT = 1;
+    public static int FROM_RIGHT = 3;
+    public static int TARGET = 5;
+
+    private int style;
 
     public PopupCard(Context context) {
         super(context);
@@ -124,6 +140,11 @@ public class PopupCard extends FrameLayout implements PopupContainer.OnOutsideLi
         return this;
     }
 
+    public PopupCard setOutSideClick(boolean outSideClick) {
+        this.outSideClick = outSideClick;
+        return this;
+    }
+
     public PopupCard setRound(int round) {
         this.round = round;
         return this;
@@ -163,6 +184,19 @@ public class PopupCard extends FrameLayout implements PopupContainer.OnOutsideLi
     public PopupCard setCaret(boolean caret) {
         this.caret = caret;
         return this;
+    }
+
+    public PopupCard setDefaultAnime(boolean defaultAnime) {
+        this.defaultAnime = defaultAnime;
+        return this;
+    }
+
+    public boolean isOpen() {
+        return open;
+    }
+
+    public void setOpen(boolean open) {
+        this.open = open;
     }
 
     public void addViews(View viewGroup) {
@@ -225,14 +259,29 @@ public class PopupCard extends FrameLayout implements PopupContainer.OnOutsideLi
         }
     }
 
+    public void close() {
+        if (this.style == TARGET) {
+            dismiss();
+        } else {
+            closeMenu();
+        }
+    }
+
     public void dismiss() {
-        this.removeAllViews();
-        popupContainer.removeView(this);
-        parent.removeView(popupContainer);
+        if (this != null) {
+            this.removeAllViews();
+        }
+        if (popupContainer != null) {
+            popupContainer.removeView(this);
+        }
+        if (parent != null) {
+            parent.removeView(popupContainer);
+        }
         removeAllViewsInLayout();
     }
 
     public void showContentAt(View target, View content) {
+        this.style = TARGET;
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
                 ConvertUtils.dp2px(context, width), ConvertUtils.dp2px(context, height));
         int[] location = new int[2];
@@ -267,10 +316,50 @@ public class PopupCard extends FrameLayout implements PopupContainer.OnOutsideLi
         setLayoutParams(layoutParams);
         addViews(content);
 
-        popupContainer = new PopupContainer(context);
+        popupContainer = new PopupContainer(context, true);
         popupContainer.addView(this);
         popupContainer.setOutsideListener(this);
+        //是否加载默认动画
+        if (defaultAnime) {
+            Anime.startAnimate1(this);
+        }
         parent.addView(popupContainer);
+    }
+
+    public void openMenu(int style, View content) {
+        dismiss();
+        this.style = style;
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
+                ConvertUtils.dp2px(context, width), ConvertUtils.dp2px(context, height));
+        int height = ConvertUtils.dp2px(context, this.height);
+        int width = ConvertUtils.dp2px(context, this.width);
+        super.setX(getWindowDimen().mWidth / 2 - width / 2);
+        super.setY(getWindowDimen().mHeight);
+        setLayoutParams(layoutParams);
+        addViews(content);
+
+        popupContainer = new PopupContainer(context, true);
+        popupContainer.addView(this);
+        popupContainer.setOutsideListener(this);
+        //是否加载默认动画
+
+        LogUtils.e("appdimen", getAppDimen().mHeight + "");
+        if (defaultAnime) {
+            Anime.startAnimate2(this, getAppDimen().mHeight, height);
+        }
+        setOpen(true);
+        parent.addView(popupContainer);
+
+    }
+
+    public void closeMenu() {
+        if (isOpen()) {
+            Anime.startAnimate3(this, getAppDimen().mHeight - 150, 500);
+            setOpen(false);
+        } else {
+            dismiss();
+            popupContainer.setOutsideclick(false);
+        }
     }
 
     @Override
@@ -295,7 +384,7 @@ public class PopupCard extends FrameLayout implements PopupContainer.OnOutsideLi
 
     @Override
     public void onOutsideClick() {
-        dismiss();
+        close();
     }
 
     private View getRootView(Activity context) {
@@ -326,7 +415,6 @@ public class PopupCard extends FrameLayout implements PopupContainer.OnOutsideLi
         Dimension dimen = new Dimension();
         Rect outRect = new Rect();
         activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(outRect);
-        System.out.println("top:" + outRect.top + " ; left: " + outRect.left);
         dimen.mWidth = outRect.width();
         dimen.mHeight = outRect.height();
         return dimen;

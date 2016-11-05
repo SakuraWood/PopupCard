@@ -1,5 +1,6 @@
 package com.sakurawood.popwindow;
 
+import android.animation.ObjectAnimator;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -13,8 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.sakurawood.popupcard.ConvertUtils;
-import com.sakurawood.popupcard.PopupCard;
+import com.sakurawood.popupcard.*;
 import com.sakurawood.rcvbaseadapter.base.BaseViewHolder;
 import com.sakurawood.rcvbaseadapter.base.RcvBaseAdapter;
 
@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                popupCardView2.dismiss();
+                popupCardView2.close();
             }
         });
 //        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(
@@ -95,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
                 setRadis(120)
                 .setRound(10).
                 setCaret(false).
+                setDefaultAnime(true).
                 setColor(Color.BLUE)
                 .setDown(true)
 //                .setLocationX(0).setLocationY(0)
@@ -107,8 +108,19 @@ public class MainActivity extends AppCompatActivity {
 //                        .setLocationX(1).setLocationY(1)
 //                        .showContentAt(textView, linearLayout, relativeLayout);
 
+                LogUtils.e("main","open");
 
-                popupCardView2.showContentAt(textView, linearLayout);
+                popupCardView2
+//                        .showContentAt(textView, linearLayout)
+                        .openMenu(PopupCard.FROM_DOWN, linearLayout);
+                ;
+
+
+
+                ObjectAnimator transYAnim1 = ObjectAnimator.ofFloat(textView, "alpha", 1.0f, 0.1f, 1.0f);
+                transYAnim1.setDuration(1000);
+                transYAnim1.start();
+
             }
         });
 

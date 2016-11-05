@@ -7,7 +7,7 @@ public class LogUtils {
 	static String className;
 	static String methodName;
 	static int lineNumber;
-	static boolean DEBUGGABLE = true; // [应用Log开关]  当为TRUE时应用全局打印LOG,上线时可设置为FALSE
+	static boolean DEBUGGABLE = false; // [应用Log开关]  当为TRUE时应用全局打印LOG,上线时可设置为FALSE
 	
     private LogUtils(){
         /* Protect from instantiations */

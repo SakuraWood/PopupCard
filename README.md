@@ -12,7 +12,7 @@ allprojects {
 ```
 add this to your build.gradle(module):
 ```
-compile 'com.github.SakuraWood:PopupCard:0.0.7'
+compile 'com.github.SakuraWood:PopupCard:0.0.8'
 ```
 
 ## How to Use

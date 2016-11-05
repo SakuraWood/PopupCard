@@ -294,13 +294,16 @@ public class PopupCard extends FrameLayout implements PopupContainer.OnOutsideLi
             //尖角向上和向下的显示位置是不一样的
 
             //如果x大于布局的二分之一，则将其定位在目标view的正上方或正下方
-            if (x + target.getWidth() / 2 > ConvertUtils.dp2px(context, width / 2)) {
+            if (x + target.getWidth() / 2 > ConvertUtils.dp2px(context, width / 2)
+                    && getWindowDimen().mWidth - (x + target.getWidth()) < width / 2) {
                 if (this.radis == 0) {
                     this.radis = 90;//如果用户没有指定尖角角度，正上方或正下方时，尖角角度设为90度
                 }
                 x = target.getWidth() / 2 + x - ConvertUtils.dp2px(context, width / 2);
             } else if (x < width / 2) {
-
+                x = 5;
+            } else if (getWindowDimen().mWidth - (x + target.getWidth()) < width / 2) {
+                x = getWindowDimen().mWidth - 5 - width;
             }
             if (!down) {
                 super.setX(x);

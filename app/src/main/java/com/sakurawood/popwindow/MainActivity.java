@@ -111,8 +111,8 @@ public class MainActivity extends AppCompatActivity {
                 LogUtils.e("main","open");
 
                 popupCardView2
-//                        .showContentAt(textView, linearLayout)
-                        .openMenu(PopupCard.FROM_DOWN, linearLayout);
+                        .showContentAt(textView, linearLayout)
+//                        .openMenu(PopupCard.FROM_DOWN, linearLayout);
                 ;
 
 
